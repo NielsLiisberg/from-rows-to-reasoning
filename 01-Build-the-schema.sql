@@ -20,7 +20,7 @@ select * from sqlr2r.EMP_RESUME;
 select * from sqlr2r.systables;
 
 -- and we need a litte trace table to see the payloads we send to the ai and the responses we get back.
-create table sqlr2r.trace (
+create or replace  table sqlr2r.trace (
     id int generated always as identity,
     text clob,
     created_at timestamp default current_timestamp
