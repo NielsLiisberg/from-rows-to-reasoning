@@ -4,11 +4,23 @@ select * from sqlr2r.in_tray;
 values sqlr2r.ask_ai  (
     instructions => 'The database is: Db2 for i. respond SQL always in lowercase.' ,
     question  => '
-        construct an sql view that shows an resume of the inbox table. 
+        create or replace an sql view that shows an resume of the inbox table. 
         the inbox is named sqlr2r.in_tray. 
         and has the following columns: SOURCE, SUBJECT, NOTE_TEXT.
         the sql UDF that call the AI is sqlr2r.ask_ai and it takes two parameters, instructions and question.' 
 );
+
+create or replace view sqlr2r.in_tray_resume as
+select
+  source,
+  subject,
+  sqlr2r.ask_ai(
+    'summarize the following inbox message in one concise sentence. preserve any named entities and important actions. if the message is empty, return an empty string.',
+    'subject: ' || coalesce(subject,'') || '; note: ' || coalesce(note_text,'')
+  ) as resume
+from sqlr2r.in_tray;
+
+select * from sqlr2r.in_tray_resume;
 
 -- the response is:
 create or replace view sqlr2r.in_tray_resume as
@@ -34,6 +46,24 @@ values sqlr2r.ask_ai  (
         the sql UDF that call the AI is sqlr2r.ask_ai and it takes two parameters, instructions and question.'
 );
  
+
+create or replace view sqlr2r.in_tray_ai_view as
+select
+  source,
+  subject,
+  note_text,
+  sqlr2r.ask_ai(
+    'summarize the following text in one short sentence',
+    note_text
+  ) as summary,
+  sqlr2r.ask_ai(
+    'determine the sentiment of the following text. return exactly one of: positive, negative, neutral. return only that single word with no extra punctuation or explanation',
+    note_text
+  ) as sentiment
+from sqlr2r.in_tray;
+
+select  * from sqlr2r.in_tray_ai_view;
+
 -- now it's getting more interesting, now AI is using it self in the query  
 -- this is the response: 
 create or replace view sqlr2r.in_tray_view as

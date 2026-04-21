@@ -3,6 +3,9 @@ From Rows to Reasoning - Bring AI into Db2 for Workflows
 
 This project demonstrates how to use AI to enhance the capabilities of Db2 with workflows. By integrating AI, we can enable more intelligent data processing and decision-making within our workflows.   
 
+
+![flow](./resources/rows2reasoning.jpg "flow")
+
 ## What is does
 
 A simple SQL UDF to interact with a LLM
